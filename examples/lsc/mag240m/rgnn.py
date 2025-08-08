@@ -101,7 +101,7 @@ class MAG240M(LightningDataModule):
             print('Merging adjacency matrices...', end=' ', flush=True)
 
             row, col, _ = torch.load(
-                f'{dataset.dir}/paper_to_paper_symmetric.pt').coo()
+                f'{dataset.dir}/paper_to_paper_symmetric.pt', weights_only=False).coo()
             rows, cols = [row], [col]
 
             edge_index = dataset.edge_index('author', 'writes', 'paper')
@@ -246,7 +246,7 @@ class MAG240M(LightningDataModule):
         self.y = torch.from_numpy(dataset.all_paper_label)
 
         path = f'{dataset.dir}/full_adj_t.pt'
-        self.adj_t = torch.load(path)
+        self.adj_t = torch.load(path, weights_only=False)
         print(f'Done! [{time.perf_counter() - t:.2f}s]')
 
     def train_dataloader(self):
@@ -449,7 +449,7 @@ if __name__ == '__main__':
         loader = datamodule.hidden_test_dataloader()
 
         model.eval()
-        device = f'cuda:{args.device}' if torch.cuda.is_available() else 'cpu'
+        device = f'sdaa:{args.device}' if torch.sdaa.is_available() else 'cpu'
         model.to(device)
         y_preds = []
         for batch in tqdm(loader):

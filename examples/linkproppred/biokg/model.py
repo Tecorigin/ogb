@@ -235,10 +235,10 @@ class KGEModel(nn.Module):
         optimizer.zero_grad()
         positive_sample, negative_sample, subsampling_weight, mode = next(train_iterator)
 
-        if args.cuda:
-            positive_sample = positive_sample.cuda()
-            negative_sample = negative_sample.cuda()
-            subsampling_weight = subsampling_weight.cuda()
+        if args.sdaa:
+            positive_sample = positive_sample.sdaa()
+            negative_sample = negative_sample.sdaa()
+            subsampling_weight = subsampling_weight.sdaa()
 
         negative_score = model((positive_sample, negative_sample), mode=mode)
         if args.negative_adversarial_sampling:
@@ -329,9 +329,9 @@ class KGEModel(nn.Module):
         with torch.no_grad():
             for test_dataset in test_dataset_list:
                 for positive_sample, negative_sample, mode in test_dataset:
-                    if args.cuda:
-                        positive_sample = positive_sample.cuda()
-                        negative_sample = negative_sample.cuda()
+                    if args.sdaa:
+                        positive_sample = positive_sample.sdaa()
+                        negative_sample = negative_sample.sdaa()
 
                     batch_size = positive_sample.size(0)
                     score = model((positive_sample, negative_sample), mode)

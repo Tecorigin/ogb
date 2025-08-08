@@ -167,10 +167,10 @@ class KGEmbedding:
             cpu_idx = th.unique(cpu_idx)
             if cpu_idx.shape[0] != 0:
                 cpu_emb = self.global_emb.emb[cpu_idx]
-                self.emb[cpu_idx] = cpu_emb.cuda(gpu_id)
+                self.emb[cpu_idx] = cpu_emb.sdaa(gpu_id)
         s = self.emb[idx]
         if gpu_id >= 0:
-            s = s.cuda(gpu_id)
+            s = s.sdaa(gpu_id)
         # During the training, we need to trace the computation.
         # In this case, we need to record the computation path and compute the gradients.
         if trace:
@@ -223,7 +223,7 @@ class KGEmbedding:
                             self.global_emb.state_sum.index_add_(0, cpu_idx, cpu_sum)
                             std = self.global_emb.state_sum[cpu_idx]
                             if gpu_id >= 0:
-                                std = std.cuda(gpu_id)
+                                std = std.sdaa(gpu_id)
                             std_values = std.sqrt_().add_(1e-10).unsqueeze(1)
                             tmp = (-clr * cpu_grad / std_values)
                             tmp = tmp.cpu()
@@ -231,7 +231,7 @@ class KGEmbedding:
                     self.state_sum.index_add_(0, grad_indices, grad_sum)
                     std = self.state_sum[grad_indices]  # _sparse_mask
                     if gpu_id >= 0:
-                        std = std.cuda(gpu_id)
+                        std = std.sdaa(gpu_id)
                     std_values = std.sqrt_().add_(1e-10).unsqueeze(1)
                     tmp = (-clr * grad_values / std_values)
                     if tmp.device != device:

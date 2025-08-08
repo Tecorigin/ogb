@@ -33,7 +33,7 @@ def parse_args(args=None):
         usage='train.py [<args>] [-h | --help]'
     )
 
-    parser.add_argument('--cuda', action='store_true', help='use GPU')
+    parser.add_argument('--sdaa', action='store_true', help='use GPU')
     
     parser.add_argument('--do_train', action='store_true')
     parser.add_argument('--do_valid', action='store_true')
@@ -218,13 +218,13 @@ def main(args):
     for name, param in kge_model.named_parameters():
         logging.info('Parameter %s: %s, require_grad = %s' % (name, str(param.size()), str(param.requires_grad)))
 
-    if args.cuda:
-        kge_model = kge_model.cuda()
+    if args.sdaa:
+        kge_model = kge_model.sdaa()
     
     if args.init_checkpoint:
         # Restore model from checkpoint directory
         logging.info('Loading checkpoint %s...' % args.init_checkpoint)
-        checkpoint = torch.load(os.path.join(args.init_checkpoint, 'checkpoint'))
+        checkpoint = torch.load(os.path.join(args.init_checkpoint, 'checkpoint'), weights_only=False)
         entity_dict = checkpoint['entity_dict']
 
     if args.do_train:
@@ -299,7 +299,7 @@ def main(args):
         training_logs = []
         
         #Training Loop
-        for step in range(init_step, args.max_steps):
+        for step in tqdm(range(init_step, args.max_steps), desc='Training'):
             
             log = kge_model.train_step(kge_model, optimizer, train_iterator, args)
             training_logs.append(log)

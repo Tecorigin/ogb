@@ -86,7 +86,7 @@ def main():
                         help='filename to output result (default: )')
     args = parser.parse_args()
 
-    device = torch.device("cuda:" + str(args.device)) if torch.cuda.is_available() else torch.device("cpu")
+    device = torch.device("sdaa:" + str(args.device)) if torch.sdaa.is_available() else torch.device("cpu")
 
     ### automatic dataloading and splitting
 

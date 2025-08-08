@@ -23,7 +23,9 @@ from utils import augment_edge, encode_y_to_arr, decode_arr_to_seq
 
 multicls_criterion = torch.nn.CrossEntropyLoss()
 
-def train(model, device, loader, optimizer):
+total_step = 0
+def train(model, device, loader, optimizer, train_step=-1):
+    global total_step
     model.train()
 
     loss_accum = 0
@@ -46,6 +48,11 @@ def train(model, device, loader, optimizer):
             optimizer.step()
 
             loss_accum += loss.item()
+
+            total_step += 1
+            if train_step != -1 and total_step >= train_step:
+                print('Average training loss: {}'.format(loss_accum / (step + 1)))
+                exit(0)
 
     print('Average training loss: {}'.format(loss_accum / (step + 1)))
 
@@ -102,8 +109,10 @@ def main():
                         help='dimensionality of hidden units in GNNs (default: 300)')
     parser.add_argument('--batch_size', type=int, default=128,
                         help='input batch size for training (default: 128)')
-    parser.add_argument('--epochs', type=int, default=25,
+    parser.add_argument('--epochs', type=int, default=1,
                         help='number of epochs to train (default: 25)')
+    parser.add_argument('--step', type=int, default=-1,
+                        help='number of steps to train (default: -1)')
     parser.add_argument('--random_split', action='store_true')
     parser.add_argument('--num_workers', type=int, default=0,
                         help='number of workers (default: 0)')
@@ -115,7 +124,7 @@ def main():
     args = parser.parse_args()
     print(args)
 
-    device = torch.device("cuda:" + str(args.device)) if torch.cuda.is_available() else torch.device("cpu")
+    device = torch.device("sdaa:" + str(args.device)) if torch.sdaa.is_available() else torch.device("cpu")
 
     ### automatic dataloading and splitting
     dataset = PygGraphPropPredDataset(name = args.dataset)
@@ -240,7 +249,7 @@ def main():
     for epoch in range(1, args.epochs + 1):
         print("=====Epoch {}".format(epoch))
         print('Training...')
-        train(model, device, train_loader, optimizer)
+        train(model, device, train_loader, optimizer, args.step)
 
         print('Evaluating...')
         train_perf = eval(model, device, train_loader, evaluator, arr_to_seq = lambda arr: decode_arr_to_seq(arr, idx2vocab))

@@ -75,7 +75,7 @@ def main():
                         help='dimensionality of hidden units in GNNs (default: 300)')
     parser.add_argument('--batch_size', type=int, default=32,
                         help='input batch size for training (default: 32)')
-    parser.add_argument('--epochs', type=int, default=100,
+    parser.add_argument('--epochs', type=int, default=1,
                         help='number of epochs to train (default: 100)')
     parser.add_argument('--num_workers', type=int, default=0,
                         help='number of workers (default: 0)')
@@ -88,7 +88,7 @@ def main():
                         help='filename to output result (default: )')
     args = parser.parse_args()
 
-    device = torch.device("cuda:" + str(args.device)) if torch.cuda.is_available() else torch.device("cpu")
+    device = torch.device("sdaa:" + str(args.device)) if torch.sdaa.is_available() else torch.device("cpu")
 
     ### automatic dataloading and splitting
     dataset = PygGraphPropPredDataset(name = args.dataset)

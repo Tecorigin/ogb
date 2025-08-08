@@ -144,7 +144,7 @@ def main():
     args = parser.parse_args()
     print(args)
 
-    device = f'cuda:{args.device}' if torch.cuda.is_available() else 'cpu'
+    device = f'sdaa:{args.device}' if torch.sdaa.is_available() else 'cpu'
     device = torch.device(device)
 
     dataset = PygLinkPropPredDataset(name='ogbl-ppa')
@@ -152,7 +152,7 @@ def main():
     data = dataset[0]
 
     x = data.x.to(torch.float)
-    embedding = torch.load('embedding.pt', map_location='cpu')
+    embedding = torch.load('embedding.pt', map_location='cpu', weights_only=False)
     x = torch.cat([x, embedding], dim=-1)
     x = x.to(device)
 

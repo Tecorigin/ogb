@@ -241,7 +241,7 @@ class RGCN(torch.nn.Module):
         return x_dict
 
 
-device = f'cuda:{args.device}' if torch.cuda.is_available() else 'cpu'
+device = f'sdaa:{args.device}' if torch.sdaa.is_available() else 'cpu'
 
 model = RGCN(128, args.hidden_channels, dataset.num_classes, args.num_layers,
              args.dropout, num_nodes_dict, list(x_dict.keys()),
@@ -310,7 +310,7 @@ for run in range(args.runs):
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     for epoch in range(1, 1 + args.epochs):
         loss = train(epoch)
-        torch.cuda.empty_cache()
+        torch.sdaa.empty_cache()
         result = test()
         logger.add_result(run, result)
         train_acc, valid_acc, test_acc = result

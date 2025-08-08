@@ -107,10 +107,10 @@ def main():
 
     np.random.seed(42)
     torch.manual_seed(42)
-    torch.cuda.manual_seed(42)
+    torch.sdaa.manual_seed(42)
     random.seed(42)
 
-    device = torch.device("cuda:" + str(args.device)) if torch.cuda.is_available() else torch.device("cpu")
+    device = torch.device("sdaa:" + str(args.device)) if torch.sdaa.is_available() else torch.device("cpu")
 
     ### automatic dataloading and splitting
     dataset = PygPCQM4Mv2Dataset(root = 'dataset/')

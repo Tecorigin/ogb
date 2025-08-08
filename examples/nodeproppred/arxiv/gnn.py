@@ -112,6 +112,7 @@ def test(model, data, split_idx, evaluator):
 
 
 def main():
+    # 这个代码中有sparse tensor和sparse conv，以及数据集存在torch.sparse_crs格式layout的处理，导致无法上sdaa卡
     parser = argparse.ArgumentParser(description='OGBN-Arxiv (GNN)')
     parser.add_argument('--device', type=int, default=0)
     parser.add_argument('--log_steps', type=int, default=1)
@@ -120,19 +121,18 @@ def main():
     parser.add_argument('--hidden_channels', type=int, default=256)
     parser.add_argument('--dropout', type=float, default=0.5)
     parser.add_argument('--lr', type=float, default=0.01)
-    parser.add_argument('--epochs', type=int, default=500)
+    parser.add_argument('--epochs', type=int, default=1)
     parser.add_argument('--runs', type=int, default=10)
     args = parser.parse_args()
     print(args)
 
-    device = f'cuda:{args.device}' if torch.cuda.is_available() else 'cpu'
+    device = f'cpu'
     device = torch.device(device)
 
     dataset = PygNodePropPredDataset(name='ogbn-arxiv',
-                                     transform=T.ToSparseTensor())
+                                     transform=T.Compose([T.ToUndirected(), T.ToSparseTensor()]))
 
     data = dataset[0]
-    data.adj_t = data.adj_t.to_symmetric()
     data = data.to(device)
 
     split_idx = dataset.get_idx_split()

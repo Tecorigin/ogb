@@ -75,12 +75,12 @@ def train(args, model, train_sampler, valid_samplers=None, test_samplers=None, r
     if args.async_update:
         model.create_async_update()
     if args.strict_rel_part or args.soft_rel_part:
-        model.prepare_relation(th.device('cuda:' + str(gpu_id)))
+        model.prepare_relation(th.device('sdaa:' + str(gpu_id)))
     if args.soft_rel_part:
         model.prepare_cross_rels(cross_rels)
     
     if args.encoder_model_name in ['roberta', 'concat']:
-        model.transform_net = model.transform_net.to(th.device('cuda:' + str(gpu_id)))
+        model.transform_net = model.transform_net.to(th.device('sdaa:' + str(gpu_id)))
         optimizer = th.optim.Adam(model.transform_net.parameters(), args.mlp_lr)
     else:
         optimizer = None
@@ -188,7 +188,7 @@ def test(args, model, test_samplers, step, rank=0, mode='Test'):
         gpu_id = -1
 
     if args.strict_rel_part or args.soft_rel_part:
-        model.load_relation(th.device('cuda:' + str(gpu_id)))
+        model.load_relation(th.device('sdaa:' + str(gpu_id)))
 
     with th.no_grad():
         logs = defaultdict(list)

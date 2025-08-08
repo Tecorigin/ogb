@@ -20,11 +20,14 @@ from ogb.lsc import PygPCQM4MDataset, PCQM4MEvaluator
 
 reg_criterion = torch.nn.L1Loss()
 
-def train(model, device, loader, optimizer):
+total_step = 0
+
+def train(model, device, loader, optimizer, train_step=-1):
+    global total_step
     model.train()
     loss_accum = 0
 
-    for step, batch in enumerate(tqdm(loader, desc="Iteration")):
+    for step, batch in enumerate(tqdm(loader, desc="Train Iteration")):
         batch = batch.to(device)
 
         pred = model(batch).view(-1,)
@@ -35,6 +38,11 @@ def train(model, device, loader, optimizer):
 
         loss_accum += loss.detach().cpu().item()
 
+        total_step += 1
+        if train_step != -1 and total_step >= train_step:
+            print('Average training loss: {}'.format(loss_accum / (step + 1)))
+            exit(0)
+
     return loss_accum / (step + 1)
 
 def eval(model, device, loader, evaluator):
@@ -42,7 +50,7 @@ def eval(model, device, loader, evaluator):
     y_true = []
     y_pred = []
 
-    for step, batch in enumerate(tqdm(loader, desc="Iteration")):
+    for step, batch in enumerate(tqdm(loader, desc="Eval Iteration")):
         batch = batch.to(device)
 
         with torch.no_grad():
@@ -93,8 +101,10 @@ def main():
     parser.add_argument('--train_subset', action='store_true')
     parser.add_argument('--batch_size', type=int, default=256,
                         help='input batch size for training (default: 256)')
-    parser.add_argument('--epochs', type=int, default=100,
+    parser.add_argument('--epochs', type=int, default=1,
                         help='number of epochs to train (default: 100)')
+    parser.add_argument('--step', type=int, default=-1,
+                        help='number of steps to train (default: -1)')
     parser.add_argument('--num_workers', type=int, default=0,
                         help='number of workers (default: 0)')
     parser.add_argument('--log_dir', type=str, default="",
@@ -107,10 +117,10 @@ def main():
 
     np.random.seed(42)
     torch.manual_seed(42)
-    torch.cuda.manual_seed(42)
+    torch.sdaa.manual_seed(42)
     random.seed(42)
 
-    device = torch.device("cuda:" + str(args.device)) if torch.cuda.is_available() else torch.device("cpu")
+    device = torch.device("sdaa:" + str(args.device)) if torch.sdaa.is_available() else torch.device("cpu")
 
     ### automatic dataloading and splitting
     dataset = PygPCQM4MDataset(root = 'dataset/')
@@ -172,7 +182,7 @@ def main():
     for epoch in range(1, args.epochs + 1):
         print("=====Epoch {}".format(epoch))
         print('Training...')
-        train_mae = train(model, device, train_loader, optimizer)
+        train_mae = train(model, device, train_loader, optimizer, args.step)
 
         print('Evaluating...')
         valid_mae = eval(model, device, valid_loader, evaluator)

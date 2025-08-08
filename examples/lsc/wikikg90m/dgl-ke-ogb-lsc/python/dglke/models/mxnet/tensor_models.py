@@ -51,7 +51,7 @@ get_scalar = lambda x: x.detach().asscalar()
 
 reshape = lambda arr, x, y: arr.reshape(x, y)
 
-cuda = lambda arr, gpu: arr.as_in_context(mx.gpu(gpu))
+sdaa = lambda arr, gpu: arr.as_in_context(mx.gpu(gpu))
 
 def l2_dist(x, y, pw=False):
     if pw is False:

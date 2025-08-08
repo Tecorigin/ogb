@@ -27,7 +27,7 @@ def main():
     parser.add_argument('--log_steps', type=int, default=100)
     args = parser.parse_args()
 
-    device = f'cuda:{args.device}' if torch.cuda.is_available() else 'cpu'
+    device = f'sdaa:{args.device}' if torch.sdaa.is_available() else 'cpu'
     device = torch.device(device)
 
     dataset = PygNodePropPredDataset('ogbn-mag')

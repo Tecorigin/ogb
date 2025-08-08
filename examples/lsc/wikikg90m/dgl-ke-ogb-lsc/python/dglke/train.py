@@ -41,7 +41,7 @@ from ogb.lsc import WikiKG90MDataset, WikiKG90MEvaluator
 
 def set_global_seed(seed):
     torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
+    torch.sdaa.manual_seed(seed)
     np.random.seed(seed)
     torch.backends.cudnn.deterministic=True
 

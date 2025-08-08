@@ -96,7 +96,7 @@ def test(model, device, loader):
 
 def run(rank, dataset, args):
     num_devices = args.num_devices
-    device = torch.device("cuda:" + str(rank)) if num_devices > 0 else torch.device("cpu")
+    device = torch.device("sdaa:" + str(rank)) if num_devices > 0 else torch.device("cpu")
 
     if num_devices > 1:
         os.environ["MASTER_ADDR"] = "localhost"
@@ -173,7 +173,7 @@ def run(rank, dataset, args):
 
     checkpoint_path = os.path.join(args.checkpoint_dir, 'checkpoint.pt')
     if os.path.isfile(checkpoint_path):
-        checkpoint = torch.load(checkpoint_path)
+        checkpoint = torch.load(checkpoint_path, weights_only=False)
 
         current_epoch = checkpoint['epoch'] + 1
         model.load_state_dict(checkpoint['model_state_dict'])
@@ -273,7 +273,7 @@ if __name__ == "__main__":
 
     seed_everything(42)
 
-    available_gpus = torch.cuda.device_count() if torch.cuda.is_available() else 0
+    available_gpus = torch.sdaa.device_count() if torch.sdaa.is_available() else 0
     assert args.num_devices <= available_gpus, f"Cannot train with {args.num_devices} GPUs: available GPUs count {available_gpus}"
 
     ### automatic dataloading and splitting

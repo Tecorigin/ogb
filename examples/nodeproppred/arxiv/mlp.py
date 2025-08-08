@@ -84,12 +84,12 @@ def main():
     parser.add_argument('--hidden_channels', type=int, default=256)
     parser.add_argument('--dropout', type=float, default=0.5)
     parser.add_argument('--lr', type=float, default=0.01)
-    parser.add_argument('--epochs', type=int, default=500)
+    parser.add_argument('--epochs', type=int, default=1)
     parser.add_argument('--runs', type=int, default=10)
     args = parser.parse_args()
     print(args)
 
-    device = f'cuda:{args.device}' if torch.cuda.is_available() else 'cpu'
+    device = f'sdaa:{args.device}' if torch.sdaa.is_available() else 'cpu'
     device = torch.device(device)
 
     dataset = PygNodePropPredDataset(name='ogbn-arxiv')
@@ -98,7 +98,7 @@ def main():
 
     x = data.x
     if args.use_node_embedding:
-        embedding = torch.load('embedding.pt', map_location='cpu')
+        embedding = torch.load('embedding.pt', map_location='cpu', weights_only=False)
         x = torch.cat([x, embedding], dim=-1)
     x = x.to(device)
 

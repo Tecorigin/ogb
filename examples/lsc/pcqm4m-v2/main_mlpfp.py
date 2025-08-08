@@ -147,15 +147,15 @@ def main_mlp():
 
     np.random.seed(42)
     torch.manual_seed(42)
-    torch.cuda.manual_seed(42)
+    torch.sdaa.manual_seed(42)
     random.seed(42)
 
-    device = torch.device("cuda:" + str(args.device)) if torch.cuda.is_available() else torch.device("cpu")
+    device = torch.device("sdaa:" + str(args.device)) if torch.sdaa.is_available() else torch.device("cpu")
 
     dataset = PCQM4Mv2Dataset(root='dataset/', only_smiles=True)
     fp_processed_file = preprocess_fp(dataset, args.radius)
 
-    data_dict = torch.load(fp_processed_file)
+    data_dict = torch.load(fp_processed_file, weights_only=False)
     X, Y = data_dict['X'], data_dict['Y']
         
     split_idx = dataset.get_idx_split()

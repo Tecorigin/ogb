@@ -38,7 +38,7 @@ from .pytorch.tensor_models import get_device
 from .pytorch.tensor_models import norm
 from .pytorch.tensor_models import get_scalar
 from .pytorch.tensor_models import reshape
-from .pytorch.tensor_models import cuda
+from .pytorch.tensor_models import sdaa
 from .pytorch.tensor_models import ExternalEmbedding
 from .pytorch.tensor_models import InferEmbedding
 from .pytorch.score_fun import *

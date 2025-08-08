@@ -42,7 +42,7 @@ def main():
     parser.add_argument('--dropedge_rate', type=float, default=0.4)
     args = parser.parse_args()
 
-    device = f'cuda:{args.device}' if torch.cuda.is_available() else 'cpu'
+    device = f'sdaa:{args.device}' if torch.sdaa.is_available() else 'cpu'
     device = torch.device(device)
 
     dataset = PygNodePropPredDataset(name='ogbn-papers100M')

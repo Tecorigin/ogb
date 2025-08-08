@@ -42,7 +42,7 @@ from .pytorch.tensor_models import get_device, get_dev
 from .pytorch.tensor_models import norm
 from .pytorch.tensor_models import get_scalar
 from .pytorch.tensor_models import reshape
-from .pytorch.tensor_models import cuda
+from .pytorch.tensor_models import sdaa
 from .pytorch.tensor_models import ExternalEmbedding
 from .pytorch.tensor_models import InferEmbedding
 from .pytorch.score_fun import *
@@ -501,7 +501,7 @@ class KEModel(object):
         gpu_id : int
             Which gpu to accelerate the calculation. if -1 is provided, cpu is used.
         """
-        scores = self.predict_score_wikikg(query, candidate, mode, to_device=cuda, gpu_id=gpu_id, trace=False)
+        scores = self.predict_score_wikikg(query, candidate, mode, to_device=sdaa, gpu_id=gpu_id, trace=False)
         argsort = F.argsort(scores, dim=1, descending=True)
         return argsort[:,:10]
 
@@ -561,7 +561,7 @@ class KEModel(object):
         self.score_func.prepare(pos_g, gpu_id, True)
         pos_score = self.predict_score(pos_g)
         if gpu_id >= 0:
-            neg_score = self.predict_neg_score(pos_g, neg_g, to_device=cuda,
+            neg_score = self.predict_neg_score(pos_g, neg_g, to_device=sdaa,
                                                gpu_id=gpu_id, trace=True,
                                                neg_deg_sample=self.args.neg_deg_sample)
         else:

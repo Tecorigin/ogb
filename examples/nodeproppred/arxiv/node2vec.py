@@ -18,13 +18,14 @@ def main():
     parser.add_argument('--walk_length', type=int, default=80)
     parser.add_argument('--context_size', type=int, default=20)
     parser.add_argument('--walks_per_node', type=int, default=10)
-    parser.add_argument('--batch_size', type=int, default=256)
+    parser.add_argument('--batch_size', type=int, default=8)
     parser.add_argument('--lr', type=float, default=0.01)
     parser.add_argument('--epochs', type=int, default=5)
+    parser.add_argument('--step', type=int, default=-1)
     parser.add_argument('--log_steps', type=int, default=1)
     args = parser.parse_args()
 
-    device = f'cuda:{args.device}' if torch.cuda.is_available() else 'cpu'
+    device = f'sdaa:{args.device}' if torch.sdaa.is_available() else 'cpu'
     device = torch.device(device)
 
     dataset = PygNodePropPredDataset(name='ogbn-arxiv')
@@ -40,6 +41,7 @@ def main():
     optimizer = torch.optim.SparseAdam(list(model.parameters()), lr=args.lr)
 
     model.train()
+    total_step = 0
     for epoch in range(1, args.epochs + 1):
         for i, (pos_rw, neg_rw) in enumerate(loader):
             optimizer.zero_grad()
@@ -53,6 +55,10 @@ def main():
 
             if (i + 1) % 100 == 0:  # Save model every 100 steps.
                 save_embedding(model)
+            total_step += 1
+            if args.step != -1 and total_step >= args.step:
+                print('Finished training.')
+                return
         save_embedding(model)
 
 

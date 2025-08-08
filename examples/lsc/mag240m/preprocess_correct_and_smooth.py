@@ -88,7 +88,7 @@ if __name__ == '__main__':
     print(args)
 
     torch.manual_seed(12345)
-    device = f'cuda:{args.device}' if torch.cuda.is_available() else 'cpu'
+    device = f'sdaa:{args.device}' if torch.sdaa.is_available() else 'cpu'
 
     dataset = MAG240MDataset(ROOT)
     evaluator = MAG240MEvaluator()
@@ -133,7 +133,7 @@ if __name__ == '__main__':
                   f'Train: {train_acc:.4f}, Valid: {valid_acc:.4f}, '
                   f'Best: {best_valid_acc:.4f}')
 
-    model.load_state_dict(torch.load('results/cs/model.pt'))
+    model.load_state_dict(torch.load('results/cs/model.pt', weights_only=False))
     model.eval()
 
     pbar = tqdm(total=dataset.num_papers)

@@ -105,14 +105,14 @@ def main():
     args = parser.parse_args()
     print(args)
 
-    device = f'cuda:{args.device}' if torch.cuda.is_available() else 'cpu'
+    device = f'sdaa:{args.device}' if torch.sdaa.is_available() else 'cpu'
     device = torch.device(device)
 
 
 
     if not args.use_sgc_embedding:
         try:
-            data_dict = torch.load('data_dict.pt')
+            data_dict = torch.load('data_dict.pt', weights_only=False)
         except:
             raise RuntimeError('data_dict.pt not found. Need to run python node2vec.py first')
         x = data_dict['node_feat']
@@ -129,7 +129,7 @@ def main():
             raise ValueError('No option to use node embedding and sgc embedding at the same time.')
         else:
             try:
-                sgc_dict = torch.load('sgc_dict.pt')
+                sgc_dict = torch.load('sgc_dict.pt', weights_only=False)
             except:
                 raise RuntimeError('sgc_dict.pt not found. Need to run python sgc.py first')
 
