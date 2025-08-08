@@ -48,7 +48,11 @@ The release note is available [here](https://github.com/snap-stanford/ogb/releas
 #### Pip install
 The recommended way to install OGB is using Python's package manager pip:
 ```bash
-pip install ogb
+pip install ogb-1.3.6-py3-none-any.whl
+# 如果模型使用了sparse的embedding，需要以下命令
+export TORCH_SDAA_RUNTIME_AUTOFALLBACK=1
+export TORCH_SDAA_FALLBACK_OPS=embedding,embedding_backward
+pip install torch_sdaa-20250807.15.30.dev0+git4fb782c-cp310-cp310-linux_x86_64.whl
 ```
 
 ```bash
@@ -61,7 +65,7 @@ pip install -U ogb
 #### From source
 You can also install OGB from source. This is recommended if you want to contribute to OGB.
 ```bash
-git clone https://github.com/snap-stanford/ogb
+git clone https://github.com/Tecorigin/ogb
 cd ogb
 pip install -e .
 ```
